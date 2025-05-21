@@ -1,0 +1,31 @@
+# Root-level .gitignore for both frontend and backend
+
+# Node.js (backend)
+backend/node_modules/
+# backend/.env
+backend/dist/
+backend/logs/
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+
+# React (frontend)
+frontend/node_modules/
+frontend/.env
+frontend/build/
+frontend/.DS_Store
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+
+# Optional: VS Code settings
+.vscode/
+
+# Optional: Mac system files
+__MACOSX/

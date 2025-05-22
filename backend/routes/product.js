@@ -15,7 +15,9 @@ const upload = multer({ storage });
 const isAdmin = (user) => user?.role === "admin";
 const isSeller = (user) => user?.role === "seller";
 
-// POST /api/products/add - Add a product by a seller
+// ================================
+// SELLER: Add a product
+// ================================
 router.post("/add", verifyToken, upload.single("image"), async (req, res) => {
   try {
     const user = req.user;
@@ -88,7 +90,9 @@ router.post("/add", verifyToken, upload.single("image"), async (req, res) => {
   }
 });
 
-// GET /api/products/my-products - Get products created by the logged-in seller
+// ================================
+// SELLER: Get products added by logged-in seller
+// ================================
 router.get("/my-products", verifyToken, async (req, res) => {
   try {
     const user = req.user;
@@ -115,6 +119,54 @@ router.get("/my-products", verifyToken, async (req, res) => {
     res.json({ products: rows });
   } catch (err) {
     console.error("Get seller products error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// ================================
+// CUSTOMER: Get all products (public)
+// ================================
+router.get("/", async (req, res) => {
+  try {
+    const sql = `
+      SELECT p.id, p.name, p.description, p.price, p.quantity, p.image_url,
+             sc.name AS subcategoryName,
+             c.name AS categoryName
+      FROM products p
+      JOIN subcategories sc ON p.subcategory_id = sc.id
+      JOIN categories c ON sc.category_id = c.id
+      ORDER BY p.id DESC
+    `;
+
+    const [rows] = await db.promise().query(sql);
+    res.json({ products: rows });
+  } catch (err) {
+    console.error("Get all products error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// ================================
+// CUSTOMER: Get products by subcategory (public)
+// ================================
+router.get("/subcategory/:subcategoryId", async (req, res) => {
+  const { subcategoryId } = req.params;
+  try {
+    const sql = `
+      SELECT p.id, p.name, p.description, p.price, p.quantity, p.image_url,
+             sc.name AS subcategoryName,
+             c.name AS categoryName
+      FROM products p
+      JOIN subcategories sc ON p.subcategory_id = sc.id
+      JOIN categories c ON sc.category_id = c.id
+      WHERE p.subcategory_id = ?
+      ORDER BY p.id DESC
+    `;
+
+    const [rows] = await db.promise().query(sql, [subcategoryId]);
+    res.json({ products: rows });
+  } catch (err) {
+    console.error("Get products by subcategory error:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 });

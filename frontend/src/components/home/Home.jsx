@@ -1,106 +1,40 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./home.css";
 import Navbar from "../navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 
+const PORT = 3000; // Change to your backend port
+const BASE_URL = `http://localhost:${PORT}`;
+const PRODUCTS_PER_PAGE = 4;
+
 const offers = [
   {
     id: 1,
-    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=800&q=80",
+    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
     alt: "Big Summer Sale",
     text: "Up to 50% off on summer collection!",
   },
   {
     id: 2,
-    img: "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=800&q=80",
+    img: "https://images.unsplash.com/photo-1503602642458-232111445657",
     alt: "New Tech Arrivals",
     text: "Latest gadgets just dropped!",
   },
   {
     id: 3,
-    img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80",
+    img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f",
     alt: "Fashion Trends",
     text: "Explore trending styles and accessories",
   },
 ];
 
-// Mock Data
-const categories = [
-  { id: 1, name: "Clothing" },
-  { id: 2, name: "Electronics" },
-];
-
-const subcategories = {
-  1: [
-    { id: 101, name: "Men's Wear" },
-    { id: 102, name: "Women's Wear" },
-  ],
-  2: [
-    { id: 201, name: "Mobiles" },
-    { id: 202, name: "Laptops" },
-  ],
-};
-
-const products = {
-  101: [
-    {
-      id: 1,
-      name: "Casual Shirt",
-      price: "$29.99",
-      image:
-        "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      id: 2,
-      name: "Jeans",
-      price: "$49.99",
-      image:
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      id: 3,
-      name: "Jacket",
-      price: "$89.99",
-      image:
-        "https://images.unsplash.com/photo-1512499617640-c2f9990c967e?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      id: 4,
-      name: "T-Shirt",
-      price: "$19.99",
-      image:
-        "https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      id: 5,
-      name: "Shoes",
-      price: "$69.99",
-      image:
-        "https://images.unsplash.com/photo-1582407947304-9a8bda8d8b3a?auto=format&fit=crop&w=400&q=80",
-    },
-  ],
-  201: [
-    {
-      id: 6,
-      name: "iPhone 13",
-      price: "$799",
-      image:
-        "https://images.unsplash.com/photo-1634829035788-cc6d40d4b7e9?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      id: 7,
-      name: "Samsung Galaxy S21",
-      price: "$699",
-      image:
-        "https://images.unsplash.com/photo-1606813904441-239aa3f1b6e2?auto=format&fit=crop&w=400&q=80",
-    },
-  ],
-};
-
-const PRODUCTS_PER_PAGE = 4;
-
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState({});
+  const [products, setProducts] = useState([]); // all products
+  const [filteredProducts, setFilteredProducts] = useState([]); // products shown based on subcategory
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -127,32 +61,74 @@ export default function Home() {
     }
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  // Fetch categories on mount
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/category`)
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error("Error fetching categories:", err));
+  }, []);
+
+  // Fetch all products on mount for default listing
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/products`)
+      .then((res) => {
+        const allProducts = Array.isArray(res.data.products) ? res.data.products : [];
+        setProducts(allProducts);
+        setFilteredProducts(allProducts);
+      })
+      .catch((err) => console.error("Error fetching products:", err));
+  }, []);
 
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
     setSelectedSubcategory(null);
     setCurrentPage(1);
+
+    axios
+      .get(`${BASE_URL}/api/subcategory/${categoryId}`)
+      .then((res) => {
+        const data = Array.isArray(res.data) ? res.data : [res.data];
+        setSubcategories((prev) => ({
+          ...prev,
+          [categoryId]: data,
+        }));
+      })
+      .catch((err) => console.error("Error fetching subcategories:", err));
+    
+    // Show all products when category is selected but no subcategory yet
+    setFilteredProducts(products);
   };
 
   const handleSubcategoryClick = (subcatId) => {
     setSelectedSubcategory(subcatId);
     setCurrentPage(1);
+
+    axios
+      .get(`${BASE_URL}/api/products/subcategory/${subcatId}`)
+      .then((res) => {
+        const productsForSubcat = Array.isArray(res.data.products) ? res.data.products : [];
+        setFilteredProducts(productsForSubcat);
+      })
+      .catch((err) => {
+        console.error("Error fetching products for subcategory:", err);
+        setFilteredProducts([]);
+      });
   };
 
-  const currentProducts = selectedSubcategory
-    ? products[selectedSubcategory] || []
-    : [];
-
-  const paginatedProducts = currentProducts.slice(
+  const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * PRODUCTS_PER_PAGE,
     currentPage * PRODUCTS_PER_PAGE
   );
 
-  const totalPages = Math.ceil(currentProducts.length / PRODUCTS_PER_PAGE);
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("loginTime");
+    navigate("/login");
+  };
 
   return (
     <div className="home-wrapper">
@@ -187,7 +163,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Category Section */}
+      {/* Categories */}
       <section className="categories-section">
         <h2>Shop by Category</h2>
         <div className="categories-grid">
@@ -196,70 +172,62 @@ export default function Home() {
               key={cat.id}
               className="category-card"
               onClick={() => handleCategoryClick(cat.id)}
+              style={{ cursor: "pointer" }}
             >
-              <img
-                src={`https://source.unsplash.com/400x300/?${cat.name}`}
-                alt={cat.name}
-              />
+              <img src={cat.image_url} alt={cat.name} />
               <h3>{cat.name}</h3>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Subcategory Section */}
+      {/* Subcategories */}
       {selectedCategory && subcategories[selectedCategory] && (
         <section className="subcategories-section">
           <h2>Subcategories</h2>
           <div className="categories-grid">
             {subcategories[selectedCategory].map((subcat) => (
               <div
-                key={subcat.id}
+                key={subcat.subcategory_id}
                 className="category-card"
-                onClick={() => handleSubcategoryClick(subcat.id)}
+                onClick={() => handleSubcategoryClick(subcat.subcategory_id)}
+                style={{ cursor: "pointer" }}
               >
-                <img
-                  src={`https://source.unsplash.com/400x300/?${subcat.name}`}
-                  alt={subcat.name}
-                />
-                <h3>{subcat.name}</h3>
+                <img src={subcat.image_url} alt={subcat.subcategory_name} />
+                <h3>{subcat.subcategory_name}</h3>
               </div>
             ))}
           </div>
         </section>
       )}
 
-      {/* Products Section */}
-      {selectedSubcategory && (
-        <section className="products-section">
-          <h2>Products</h2>
-          <div className="products-grid">
-            {paginatedProducts.map((product) => (
-              <div className="product-card" key={product.id}>
-                <img src={product.image} alt={product.name} />
-                <h3>{product.name}</h3>
-                <p>{product.price}</p>
-              </div>
-            ))}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="pagination">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  className={`page-button ${
-                    currentPage === i + 1 ? "active" : ""
-                  }`}
-                  onClick={() => setCurrentPage(i + 1)}
-                >
-                  {i + 1}
-                </button>
-              ))}
+      {/* Products */}
+      <section className="products-section">
+        <h2>Products</h2>
+        <div className="products-grid">
+          {paginatedProducts.map((product) => (
+            <div className="product-card" key={product.id}>
+              <img src={product.image_url} alt={product.name} />
+              <h3>{product.name}</h3>
+              <p>₹{product.price}</p>
             </div>
-          )}
-        </section>
-      )}
+          ))}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="pagination">
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i}
+                className={`page-button ${currentPage === i + 1 ? "active" : ""}`}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
 
       {/* Newsletter */}
       <section className="newsletter-section">

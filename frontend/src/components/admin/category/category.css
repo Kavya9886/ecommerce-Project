@@ -5,7 +5,9 @@
   width: 100dvw;
   height: 100dvh;
 }
-
+.adincatImg{
+  width: 100px;
+}
 .navbar {
   background-color: #0077b6;
   color: white;

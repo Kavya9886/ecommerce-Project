@@ -1,21 +1,31 @@
-import React, { useState } from "react";
-import "../category/category.css";
+import React, { useEffect, useState } from "react";
+import "./category.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const initialCategories = [];
-
-export default function Product() {
-  const [categories, setCategories] = useState(initialCategories);
+export default function AdminCategory() {
+  const [category, setcategory] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [form, setForm] = useState({
     name: "",
-    image: "",
-    quantity: "",
-    price: "",
-    description: "",
+    image: null,
   });
+
   const navigate = useNavigate();
+
+  const fetchcategory = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/category");
+      setcategory(res.data);
+    } catch (error) {
+      console.error("Error fetching category", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchcategory();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -27,30 +37,67 @@ export default function Product() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddOrEdit = (e) => {
+  const handleFileChange = (e) => {
+    setForm((prev) => ({ ...prev, image: e.target.files[0] }));
+  };
+
+  const handleAddOrEdit = async (e) => {
     e.preventDefault();
-    if (editIndex !== null) {
-      const updated = [...categories];
-      updated[editIndex] = { ...form };
-      setCategories(updated);
-    } else {
-      setCategories([...categories, { ...form }]);
+    const token = localStorage.getItem("token");
+    console.log("first")
+    const formData = new FormData();
+    formData.append("name", form.name);
+    if (form.image) formData.append("image", form.image);
+
+    try {
+      if (editIndex !== null) {
+        const categoryId = category[editIndex].id;
+        await axios.put(
+          `http://localhost:3000/api/category/${categoryId}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      } else {
+        await axios.post("http://localhost:3000/api/category/add", formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+      setForm({ name: "", image: null });
+      setEditIndex(null);
+      setShowModal(false);
+      fetchcategory();
+    } catch (error) {
+      console.error("Error submitting form", error);
     }
-    setForm({ name: "", image: "", quantity: "", price: "", description: "" });
-    setEditIndex(null);
-    setShowModal(false);
   };
 
   const handleEdit = (index) => {
-    setForm(categories[index]);
+    setForm({ name: category[index].name, image: null });
     setEditIndex(index);
     setShowModal(true);
   };
 
-  const handleDelete = (index) => {
-    const updated = [...categories];
-    updated.splice(index, 1);
-    setCategories(updated);
+  const handleDelete = async (index) => {
+    const token = localStorage.getItem("token");
+    const categoryId = category[index].id;
+    try {
+      await axios.delete(`http://localhost:3000/api/category/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchcategory();
+    } catch (error) {
+      console.error("Error deleting category", error);
+    }
   };
 
   return (
@@ -58,20 +105,18 @@ export default function Product() {
       <nav className="navbar">
         <div className="logo">Admin Panel</div>
         <div className="nav-actions">
-          <button onClick={() => (window.location.href = "/admin")}>
-            Home
-          </button>
+          <button onClick={() => navigate("/admin")}>Home</button>
           <button onClick={handleLogout}>Logout</button>
         </div>
       </nav>
 
       <div className="content">
-        <h2>Manage Categories</h2>
-        {categories.length === 0 ? (
+        <h2>Manage category</h2>
+        {category.length === 0 ? (
           <div className="empty-state">
-            <p>Welcome! No Product found. Please add a new Products.</p>
+            <p>Welcome! No category found. Please add a new category.</p>
             <button className="add-btn" onClick={() => setShowModal(true)}>
-              + Add Products
+              + Add Category
             </button>
           </div>
         ) : (
@@ -85,20 +130,16 @@ export default function Product() {
                   <tr>
                     <th>Name</th>
                     <th>Image URL</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Description</th>
+                    <th>Created At</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {categories.map((cat, index) => (
-                    <tr key={index}>
+                  {category.map((cat, index) => (
+                    <tr key={cat.id}>
                       <td>{cat.name}</td>
-                      <td>{cat.image}</td>
-                      <td>{cat.quantity}</td>
-                      <td>{cat.price}</td>
-                      <td>{cat.description}</td>
+                      <td><img className="adincatImg" src={cat.image_url}/></td>
+                      <td>{new Date(cat.created_at).toLocaleString()}</td>
                       <td>
                         <button
                           className="edit-btn"
@@ -135,42 +176,11 @@ export default function Product() {
                 required
               />
               <input
-                name="name"
-                placeholder="subcategory"
-                value={form.name}
-                onChange={handleInputChange}
-                required
-              />
-              <input
                 name="image"
-                placeholder="Image URL"
-                value={form.image}
-                onChange={handleInputChange}
-                required
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
               />
-              <input
-                name="quantity"
-                type="number"
-                placeholder="Quantity"
-                value={form.quantity}
-                onChange={handleInputChange}
-                required
-              />
-              <input
-                name="price"
-                type="number"
-                placeholder="Price"
-                value={form.price}
-                onChange={handleInputChange}
-                required
-              />
-              <textarea
-                name="description"
-                placeholder="Description"
-                value={form.description}
-                onChange={handleInputChange}
-                required
-              ></textarea>
               <div className="modal-actions">
                 <button type="submit" className="add-btn">
                   {editIndex !== null ? "Update" : "Add"}
@@ -180,13 +190,7 @@ export default function Product() {
                   className="cancel-btn"
                   onClick={() => {
                     setShowModal(false);
-                    setForm({
-                      name: "",
-                      image: "",
-                      quantity: "",
-                      price: "",
-                      description: "",
-                    });
+                    setForm({ name: "", image: null });
                     setEditIndex(null);
                   }}
                 >

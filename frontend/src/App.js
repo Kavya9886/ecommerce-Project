@@ -5,9 +5,9 @@ import RegisterPage from "./components/RegisterPage";
 import Home from "./components/home/Home";
 import Seller from "./components/seller/Seller";
 import Admin from "./components/admin/Admin";
-import Category from "./components/admin/category/Category";
-import SubCategory from "./components/admin/subcategory/SubCategory";
-import Product from "./components/admin/product/Product";
+import AdminCategory from "./components/admin/category/AdminCategory";
+import AdminSubCategory from "./components/admin/subcategory/AdminSubCategory";
+import AdminProduct from "./components/admin/product/AdminProduct";
 
 function App() {
   return (
@@ -18,9 +18,9 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/seller" element={<Seller />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path="/admin/categories" element={<Category />} />
-      <Route path="/admin/subcategories" element={<SubCategory />} />
-      <Route path="/admin/products" element={<Product />} />
+      <Route path="/admin/categories" element={<AdminCategory />} />
+      <Route path="/admin/subcategories" element={<AdminSubCategory />} />
+      <Route path="/admin/products" element={<AdminProduct />} />
     </Routes>
   );
 }

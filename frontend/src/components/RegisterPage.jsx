@@ -23,7 +23,7 @@ const RegisterPage = () => {
     e.preventDefault();
     setMessage("");
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/signup", formData);
+      const res = await axios.post("http://localhost:3000/api/signup", formData);
       setMessage(res.data.message);
 
       // Wait 1 second and then navigate to login

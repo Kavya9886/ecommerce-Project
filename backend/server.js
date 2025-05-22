@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/subcategory", subcategoryRoutes);
-app.use("/api/product", productRoutes);
+app.use("/api/products", productRoutes);
 app.use("/uploads", express.static("uploads"));
 
 // Root route

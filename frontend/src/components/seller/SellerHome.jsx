@@ -86,6 +86,8 @@ export default function SellerHome() {
     try {
       const token = localStorage.getItem("token");
       const numSubId=parseInt(form.subcategory)
+      console.log(numSubId)
+      console.log(typeof numSubId)
       const formData = new FormData();
 
 

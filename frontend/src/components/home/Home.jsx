@@ -207,8 +207,9 @@ export default function Home() {
         <div className="products-grid">
           {paginatedProducts.map((product) => (
             <div className="product-card" key={product.id}>
-              <img src={product.image_url} alt={product.name} />
-              <h3>{product.name}</h3>
+             
+              <img src={`http://localhost:3000${product.image_url}`} alt={product.name} />
+              <h3>{product.name}</h3>1
               <p>₹{product.price}</p>
             </div>
           ))}

@@ -1,0 +1,152 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.5rem;
+  background-color: #0077cc;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Right side items */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: max-height 0.3s ease;
+}
+
+/* Profile pic */
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  cursor: pointer;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+.icon-btn:hover {
+  color: #ffa69e;
+}
+
+.logout-btn {
+  background-color: #ff6f61;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #e85a4f;
+}
+
+/* Hamburger menu button - hidden on desktop */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+}
+
+.hamburger-bar {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+/* Responsive Styles */
+
+/* Mobile (up to 768px) */
+@media (max-width: 768px) {
+  /* Show hamburger */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Hide right nav by default */
+  .navbar-right {
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #0077cc;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 1.5rem;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+
+  /* Show when open */
+  .navbar-right.open {
+    max-height: 300px; /* enough for content */
+    padding: 1rem 1.5rem;
+  }
+
+  .user-name {
+    margin-bottom: 0.5rem;
+  }
+
+  .logout-btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem 0;
+    border-radius: 8px;
+  }
+
+  .icon-btn {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Tablet and Desktop */
+@media (min-width: 769px) {
+  .navbar-right {
+    position: static;
+    max-height: none !important;
+    flex-direction: row;
+    background: none;
+    width: auto;
+    padding: 0;
+    box-shadow: none;
+  }
+}

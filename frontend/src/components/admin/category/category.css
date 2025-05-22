@@ -1,0 +1,163 @@
+.category-page {
+  font-family: sans-serif;
+  padding: 0;
+  margin: 0;
+  width: 100dvw;
+  height: 100dvh;
+}
+.adincatImg{
+  width: 100px;
+}
+.navbar {
+  background-color: #0077b6;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  align-items: center;
+}
+
+.nav-actions button {
+  margin-left: 1rem;
+  padding: 8px 14px;
+  background: white;
+  color: #0077b6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.content {
+  padding: 2rem;
+}
+
+.add-btn {
+  padding: 8px 16px;
+  background-color: #38b000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+table {
+  min-width: 900px;
+  border-collapse: collapse;
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+.edit-btn {
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  margin-right: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #d62828;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal-content form input,
+.modal-content form textarea {
+  width: 94%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancel-btn {
+  padding: 8px 14px;
+  background-color: #adb5bd;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .navbar {
+    width: 80%;
+    height: 100px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .nav-actions button {
+    display: flex;
+    width: 80px;
+    justify-content: center;
+    margin-bottom: 10px;
+    height: 40px;
+    flex-direction: column;
+    background: white;
+    color: #0077b6;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .empty-state {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+}

@@ -1,0 +1,103 @@
+/* Container Layout */
+.auth-container {
+  max-width: 420px;
+  margin: 3rem auto;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  background: #faf3dd;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Heading */
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+/* Inputs & Select */
+.auth-container input,
+.auth-container select {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.6rem 0;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+  transition: border 0.3s ease;
+}
+
+.auth-container input:focus,
+.auth-container select:focus {
+  border-color: #aed9e0;
+  outline: none;
+}
+
+/* Submit Button */
+.auth-container button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background: #aed9e0;
+  color: #333;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.auth-container button:hover {
+  background: #b8f2e6;
+}
+
+/* Message Styling */
+.auth-container p {
+  text-align: center;
+  margin-top: 1rem;
+  color: #ef233c;
+  font-weight: 500;
+}
+
+/* Links */
+.auth-container a {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #2b2d42;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s;
+}
+
+.auth-container a:hover {
+  color: #ef233c;
+}
+
+/* Link Container */
+.auth-container .links {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-container {
+    margin: 2rem auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .auth-container h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-container {
+    max-width: 480px;
+    padding: 3rem;
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../category/category.css";
+import { useNavigate } from "react-router-dom";
 
 const initialCategories = [];
 
@@ -15,10 +16,12 @@ export default function SubCategory() {
     description: "",
   });
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  };
+   const navigate = useNavigate();
+ 
+   const handleLogout = () => {
+     localStorage.removeItem("token");
+     navigate("/login");
+   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

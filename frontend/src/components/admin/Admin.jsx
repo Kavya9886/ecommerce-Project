@@ -5,7 +5,10 @@ import "./admin.css";
 
 export default function AdminLanding() {
   const navigate = useNavigate();
-
+function logout(){
+  localStorage.removeItem("token");
+  navigate("/login")
+}
   return (
     <div className="admin-wrapper">
       <nav className="admin-navbar">
@@ -19,6 +22,9 @@ export default function AdminLanding() {
           </button>
           <button onClick={() => navigate("/admin/products")}>
             Manage Product
+          </button>
+          <button onClick={logout}>
+            Logout
           </button>
         </div>
       </nav>

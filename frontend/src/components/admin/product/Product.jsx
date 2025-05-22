@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../category/category.css";
+import { useNavigate } from "react-router-dom";
 
 const initialCategories = [];
 
@@ -14,10 +15,11 @@ export default function Product() {
     price: "",
     description: "",
   });
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    navigate("/login");
   };
 
   const handleInputChange = (e) => {
@@ -56,7 +58,9 @@ export default function Product() {
       <nav className="navbar">
         <div className="logo">Admin Panel</div>
         <div className="nav-actions">
-          <button onClick={() => (window.location.href = "/admin")}>Home</button>
+          <button onClick={() => (window.location.href = "/admin")}>
+            Home
+          </button>
           <button onClick={handleLogout}>Logout</button>
         </div>
       </nav>
@@ -96,10 +100,16 @@ export default function Product() {
                       <td>{cat.price}</td>
                       <td>{cat.description}</td>
                       <td>
-                        <button className="edit-btn" onClick={() => handleEdit(index)}>
+                        <button
+                          className="edit-btn"
+                          onClick={() => handleEdit(index)}
+                        >
                           Edit
                         </button>
-                        <button className="delete-btn" onClick={() => handleDelete(index)}>
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDelete(index)}
+                        >
                           Delete
                         </button>
                       </td>
@@ -170,7 +180,13 @@ export default function Product() {
                   className="cancel-btn"
                   onClick={() => {
                     setShowModal(false);
-                    setForm({ name: "", image: "", quantity: "", price: "", description: "" });
+                    setForm({
+                      name: "",
+                      image: "",
+                      quantity: "",
+                      price: "",
+                      description: "",
+                    });
                     setEditIndex(null);
                   }}
                 >

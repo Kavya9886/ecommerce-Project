@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./PlaceOrder.css";
-
+import { useNavigate } from "react-router-dom";
 const PlaceOrder = () => {
   const [cart, setCart] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [showAddressForm, setShowAddressForm] = useState(false);
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
@@ -62,17 +63,31 @@ const PlaceOrder = () => {
     });
     fetchAddresses();
   };
-
+  const handleRemove = async (productId) => {
+    try {
+      await axios.delete("http://localhost:3000/api/cart/clear", {
+        headers: {Authorization: token},
+      });
+      console.log("cleared cart")
+    } catch (error) {
+      console.error("Failed to remove item:", error);
+    }
+  };
   const placeOrder = async () => {
-    const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const items = cart.map(({ id, quantity, price }) => ({
+    const total = cart.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    const items = cart.map(({ id, quantity, price, name, image }) => ({
       product_id: id,
       quantity,
       price,
+      name,
+      image,
     }));
 
     try {
-      await axios.post(
+      const response = await axios.post(
         "http://localhost:3000/api/order-item/add",
         {
           items,
@@ -83,7 +98,19 @@ const PlaceOrder = () => {
           headers: { Authorization: token },
         }
       );
-      alert("Order placed successfully!");
+
+      if (window.confirm("Are you sure you want to place the order?")) {
+        const orderData = {
+          id: response.data.order_id,
+          items,
+          total_price: total,
+          address: addresses.find((a) => a.id === selectedAddressId),
+          estimated_delivery: "5-7 business days", // or get from API
+        };
+
+        navigate("/order-confirmation", { state: { order: orderData } });
+        handleRemove();
+      }
     } catch (err) {
       console.error(err.response?.data || err);
       alert("Error placing order.");

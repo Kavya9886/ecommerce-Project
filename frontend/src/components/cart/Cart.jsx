@@ -51,7 +51,11 @@ const Cart = () => {
           <div className="cart-grid">
             {cartItems.map((item) => (
               <div key={item.id} className="cart-item">
-                <img src={item.image_url} alt={item.name} className="cart-img" />
+                <img
+                  src={item.image_url}
+                  alt={item.name}
+                  className="cart-img"
+                />
                 <div className="cart-info">
                   <h3>{item.name}</h3>
                   <p>Price: ₹{item.price}</p>
@@ -69,11 +73,15 @@ const Cart = () => {
           <div className="cart-summary">
             <h3>Total: ₹{getTotal()}</h3>
             {cartItems.length > 0 && (
-  <button className="place-order-btn" onClick={() => navigate("/place-order", { state: { cartItems } })}>
-    Place Order
-  </button>
-)}
-
+              <button
+                className="place-order-btn"
+                onClick={() =>
+                  navigate("/place-order", { state: { cartItems } })
+                }
+              >
+                Place Order
+              </button>
+            )}
           </div>
         </>
       )}

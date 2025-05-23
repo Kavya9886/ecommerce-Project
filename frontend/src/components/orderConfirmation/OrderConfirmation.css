@@ -1,0 +1,99 @@
+.order-confirmation-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.order-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.order-header h1 {
+  color: #2e8b57;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.order-header p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.order-details {
+  margin-bottom: 2rem;
+}
+
+.detail-section {
+  margin-bottom: 1.5rem;
+}
+
+.detail-section h2 {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.detail-section p {
+  margin: 0.25rem 0;
+  color: #666;
+}
+
+.product-list {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+}
+
+.product-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.product-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 1rem;
+  border-radius: 8px;
+}
+
+.product-info {
+  flex-grow: 1;
+}
+
+.product-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.product-info p {
+  margin: 0.25rem 0;
+  color: #666;
+}
+
+.invoice-button {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.invoice-button button {
+  background-color: #2e8b57;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.invoice-button button:hover {
+  background-color: #246b45;
+}

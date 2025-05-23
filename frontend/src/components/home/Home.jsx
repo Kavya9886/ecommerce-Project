@@ -29,7 +29,7 @@ const offers = [
   },
 ];
 
-export default function Home() {
+export default function Home({ setViewMor }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
@@ -74,7 +74,9 @@ export default function Home() {
     axios
       .get(`${BASE_URL}/api/products`)
       .then((res) => {
-        const allProducts = Array.isArray(res.data.products) ? res.data.products : [];
+        const allProducts = Array.isArray(res.data.products)
+          ? res.data.products
+          : [];
         setProducts(allProducts);
         setFilteredProducts(allProducts);
       })
@@ -96,7 +98,7 @@ export default function Home() {
         }));
       })
       .catch((err) => console.error("Error fetching subcategories:", err));
-    
+
     // Show all products when category is selected but no subcategory yet
     setFilteredProducts(products);
   };
@@ -108,7 +110,9 @@ export default function Home() {
     axios
       .get(`${BASE_URL}/api/products/subcategory/${subcatId}`)
       .then((res) => {
-        const productsForSubcat = Array.isArray(res.data.products) ? res.data.products : [];
+        const productsForSubcat = Array.isArray(res.data.products)
+          ? res.data.products
+          : [];
         setFilteredProducts(productsForSubcat);
       })
       .catch((err) => {
@@ -207,10 +211,20 @@ export default function Home() {
         <div className="products-grid">
           {paginatedProducts.map((product) => (
             <div className="product-card" key={product.id}>
-             
-              <img src={`http://localhost:3000${product.image_url}`} alt={product.name} />
-              <h3>{product.name}</h3>1
-              <p>₹{product.price}</p>
+              <img
+                src={`http://localhost:3000${product.image_url}`}
+                alt={product.name}
+              />
+              <h3>{product.name}</h3>1<p>₹{product.price}</p>
+              <button
+                onClick={() => {
+                  setViewMor(product);
+                  navigate("/viewmore");
+                }}
+              >
+                
+                View More
+              </button>
             </div>
           ))}
         </div>
@@ -220,7 +234,9 @@ export default function Home() {
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i}
-                className={`page-button ${currentPage === i + 1 ? "active" : ""}`}
+                className={`page-button ${
+                  currentPage === i + 1 ? "active" : ""
+                }`}
                 onClick={() => setCurrentPage(i + 1)}
               >
                 {i + 1}

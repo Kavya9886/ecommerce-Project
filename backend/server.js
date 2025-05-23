@@ -14,6 +14,7 @@ const cartRoutes = require("./routes/cart");
 const addressRoutes = require("./routes/address");
 const orderRoutes = require("./routes/order");
 const orderItemRoutes = require("./routes/orderItem");
+const orderHistoryRoutes = require("./routes/orderHistory");
 
 // ✅ Use routes
 app.use(cors());
@@ -22,6 +23,7 @@ app.use("/api", authRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/subcategory", subcategoryRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/orderHistory", orderHistoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/orders", orderRoutes);

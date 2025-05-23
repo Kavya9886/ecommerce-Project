@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./seller.css";
+import Navbar from "./Navbar";
 
 export default function SellerHome() {
+  const PORT = 3000; // Change to your backend port
+const BASE_URL = `http://localhost:${PORT}`;
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const token = localStorage.getItem("token");
+  const [user, setUser] = useState(null);
+    const [editMode, setEditMode] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    image_url: "",
+  });
 
   const [form, setForm] = useState({
     name: "",
@@ -18,7 +31,16 @@ export default function SellerHome() {
     quantity: "",
     imageFile: null, // store file here
   });
-
+  useEffect(() => {
+    if (token) {
+      axios
+        .get(`${BASE_URL}/api/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => setUser(res.data))
+        .catch((err) => console.error("Error fetching user info:", err));
+    }
+  }, [token]);
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/login";
@@ -65,7 +87,16 @@ export default function SellerHome() {
       setSubcategories([]);
     }
   };
-
+const openSettingsModal = () => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        image_url: user.image_url || "",
+      });
+    }
+    setSettingsOpen(true);
+  };
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
@@ -160,12 +191,12 @@ export default function SellerHome() {
 
   return (
     <div className="seller-wrapper">
-      <nav className="seller-navbar">
-        <div className="logo">Seller Dashboard</div>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
-      </nav>
+        <Navbar
+        userName={user?.name || "Guest"}
+        profilePicUrl={user?.image_url || "https://i.pravatar.cc/150?img=3"}
+        onLogout={handleLogout}
+        onSettings={openSettingsModal}
+      />
 
       <div className="seller-content">
         <div className="seller-header">
@@ -322,6 +353,130 @@ export default function SellerHome() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+        {settingsOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>User Profile</h2>
+
+            {!editMode ? (
+              <div className="user-details">
+                <img
+                  src={user?.image_url || "https://i.pravatar.cc/150?img=3"}
+                  alt="Profile"
+                  width={"200px"}
+                  className="profile-preview"
+                />
+                <p>
+                  <strong>Name:</strong> {user?.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {user?.email}
+                </p>
+                <div className="modal-actions">
+                  <button onClick={() => setEditMode(true)}>Edit</button>
+                  <button onClick={() => setSettingsOpen(false)}>Close</button>
+                </div>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const data = new FormData();
+                  data.append("name", formData.name);
+                  data.append("email", formData.email);
+                  if (formData.password)
+                    data.append("password", formData.password);
+                  if (formData.imageFile)
+                    data.append("image", formData.imageFile);
+
+                  axios
+                    .put(`${BASE_URL}/api/users/update-profile`, data, {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                      },
+                    })
+                    .then((res) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        name: formData.name,
+                        email: formData.email,
+                        image_url: res.data.image_url || prev.image_url,
+                      }));
+                      setSettingsOpen(false);
+                      setEditMode(false);
+                      alert("Profile updated successfully!");
+                    })
+                    .catch((err) => {
+                      console.error("Update failed", err);
+                      alert("Failed to update profile.");
+                    });
+                }}
+              >
+                <label>
+                  Name:
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Email:
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Password:
+                  <input
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  Upload Image:
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setFormData({ ...formData, imageFile: e.target.files[0] })
+                    }
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button type="submit">Save</button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditMode(false);
+                      setFormData({
+                        name: user?.name || "",
+                        email: user?.email || "",
+                        password: "",
+                        imageFile: null,
+                      });
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

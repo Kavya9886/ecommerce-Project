@@ -9,7 +9,7 @@ const Navbar = ({ userName = "John Doe", profilePicUrl, onLogout, onSettings }) 
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <h1 className="logo">YourShop</h1>
+        <h1 className="logo">E-Cart</h1>
       </div>
 
       {/* Hamburger toggle for mobile */}

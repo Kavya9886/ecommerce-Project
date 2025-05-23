@@ -11,7 +11,7 @@ function validateAddressFields(body) {
   const requiredFields = [
     "full_name",
     "phone",
-    "address_line1",
+    "address1",
     "city",
     "state",
     "postal_code",
@@ -25,8 +25,8 @@ function formatAddress(body) {
   return {
     full_name: body.full_name,
     phone: body.phone,
-    address_line1: body.address_line1,
-    address_line2: body.address_line2 || "",
+    address1: body.address1,
+    address2: body.address2 || "",
     city: body.city,
     state: body.state,
     postal_code: body.postal_code,
@@ -53,7 +53,7 @@ router.post("/add", verifyToken, async (req, res) => {
     const address = formatAddress(req.body);
     const sql = `
       INSERT INTO address 
-      (user_id, full_name, phone, address_line1, address_line2, city, state, postal_code, country)
+      (user_id, full_name, phone, address1, address2, city, state, postal_code, country)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
@@ -61,8 +61,8 @@ router.post("/add", verifyToken, async (req, res) => {
       user.id,
       address.full_name,
       address.phone,
-      address.address_line1,
-      address.address_line2,
+      address.address1,
+      address.address2,
       address.city,
       address.state,
       address.postal_code,
@@ -107,7 +107,7 @@ router.put("/:id", verifyToken, async (req, res) => {
     const address = formatAddress(req.body);
     const sql = `
       UPDATE address SET 
-        full_name = ?, phone = ?, address_line1 = ?, address_line2 = ?, 
+        full_name = ?, phone = ?, address1 = ?, address2 = ?, 
         city = ?, state = ?, postal_code = ?, country = ?
       WHERE id = ? AND user_id = ?
     `;
@@ -115,8 +115,8 @@ router.put("/:id", verifyToken, async (req, res) => {
     const result = await query(sql, [
       address.full_name,
       address.phone,
-      address.address_line1,
-      address.address_line2,
+      address.address1,
+      address.address2,
       address.city,
       address.state,
       address.postal_code,

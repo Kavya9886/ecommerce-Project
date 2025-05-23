@@ -68,12 +68,10 @@ router.post("/add", verifyToken, (req, res) => {
       `;
         db.query(insertItemsSql, [orderItems], (err) => {
           if (err)
-            return res
-              .status(500)
-              .json({
-                message: "Failed to add order items",
-                error: err.message,
-              });
+            return res.status(500).json({
+              message: "Failed to add order items",
+              error: err.message,
+            });
 
           // ✅ Final response
           res.status(201).json({

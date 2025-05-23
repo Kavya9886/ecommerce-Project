@@ -8,14 +8,40 @@ import AdminCategory from "./components/admin/category/AdminCategory";
 import AdminSubCategory from "./components/admin/subcategory/AdminSubCategory";
 import AdminProduct from "./components/admin/product/AdminProduct";
 import SellerHome from "./components/seller/SellerHome";
-
+import ViewMore from "./components/viewMore/ViewMore";
+import { useEffect, useState } from "react";
+import Cart from "./components/cart/Cart";
+import PlaceOrder from "./components/placeOrder/PlaceOrder";
+import OrderConfirmation from "./components/orderConfirmation/OrderConfirmation";
+import OrderHistory from "./components/orderHistory/OrderHistory";
 function App() {
+  const [viewMor, setViewMor] = useState(null);
+  useEffect(() => {
+    if (viewMor) {
+      console.log("Product to view more:", viewMor);
+    }
+  }, [viewMor]);
+  const isAuthenticated = () => {
+    const token = localStorage.getItem("token");
+    const expiresAt = localStorage.getItem("expiresAt");
+
+    if (!token || !expiresAt) return false;
+
+    const now = new Date().getTime();
+    return now < parseInt(expiresAt);
+  };
+
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/home" element={<Home />} />
+      <Route path="/home" element={<Home setViewMor={setViewMor} />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/place-order" element={<PlaceOrder />} />
+      <Route path="/order-confirmation" element={<OrderConfirmation />} />
+      <Route path="/order-history" element={<OrderHistory />} />
+      <Route path="/viewmore" element={<ViewMore viewMor={viewMor} />} />
       <Route path="/seller" element={<SellerHome />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/categories" element={<AdminCategory />} />

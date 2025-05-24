@@ -31,6 +31,7 @@ CREATE TABLE products (
   subcategory_id INT NOT NULL,
   image_url VARCHAR(255) NOT NULL,
   seller_id INT NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,  -- New column added
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   quantity INT DEFAULT 0,
   INDEX idx_subcategory_id (subcategory_id),
@@ -38,6 +39,7 @@ CREATE TABLE products (
   FOREIGN KEY (subcategory_id) REFERENCES subcategories(id) ON DELETE CASCADE,
   FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE cart (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,6 +52,19 @@ CREATE TABLE cart (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
+CREATE TABLE cart (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL CHECK (quantity > 0),
+  image_url VARCHAR(255),  -- New column added
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
 CREATE TABLE address (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -65,18 +80,23 @@ CREATE TABLE address (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+);
 CREATE TABLE orders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   address_id INT NOT NULL,
   total_price DECIMAL(10, 2) NOT NULL,
   status VARCHAR(50) DEFAULT 'Pending',
+  image_url VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
   FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (address_id) REFERENCES address(id) 
+  FOREIGN KEY (address_id) REFERENCES address(id) ON DELETE CASCADE
 );
+
+
 
 CREATE TABLE order_items (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -87,6 +107,15 @@ CREATE TABLE order_items (
 
   FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE order_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
 

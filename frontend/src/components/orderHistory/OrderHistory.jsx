@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
+  const [addrData, setAddrData] = useState();
+  const [addrId, setAddrId] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
@@ -20,8 +22,18 @@ const OrderHistory = () => {
             headers: { Authorization: token },
           }
         );
+  
+        data.forEach((order) => {
+          setAddrId(order.address_id);
+        });
+        const addrData = await axios.get(
+          `http://localhost:3000/api/address/${addrId}`,
+          {
+            headers: { Authorization: token },
+          }
+        );
+        setAddrData(addrData.data.address);
         setOrders(data);
-        console.log(data);
       } catch (err) {
         setError("Failed to fetch orders.");
       } finally {
@@ -30,7 +42,7 @@ const OrderHistory = () => {
     };
     fetchOrders();
   }, [token]);
-
+  console.log("addrData", addrData);
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
@@ -65,6 +77,27 @@ const OrderHistory = () => {
                   <span>Order #{order.id}</span>
                   <span>{new Date(order.created_at).toLocaleDateString()}</span>
                 </div>
+
+                {/* Display order image here */}
+                <div
+                  className="order-image-container"
+                  style={{ marginBottom: "10px" }}
+                >
+                  <img
+                    src={
+                      `http://localhost:3000${order.image_url}` ||
+                      "/placeholder.png"
+                    }
+                    alt={`Order ${order.id} image`}
+                    style={{
+                      width: "100%",
+                      maxHeight: "200px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+
                 <div className="order-details">
                   <p>
                     <strong>Total:</strong> ₹{order.total_price}
@@ -73,12 +106,16 @@ const OrderHistory = () => {
                     <strong>Status:</strong> {order.status || "Processing"}
                   </p>
                 </div>
+
                 {order.items && order.items.length > 0 && (
                   <div className="order-items">
                     {order.items.map((item) => (
                       <div key={item.id} className="order-item">
                         <img
-                          src={item.image_url || "/placeholder.png"}
+                          src={
+                            `http://localhost:3000${item.image_url}` ||
+                            "/placeholder.png"
+                          }
                           alt={item.name}
                         />
                         <div>

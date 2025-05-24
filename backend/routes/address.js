@@ -91,6 +91,28 @@ router.get("/", verifyToken, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+// 📌 GET Specific Address by ID
+router.get("/:id", verifyToken, async (req, res) => {
+  try {
+    const user = req.user;
+    const addressId = req.params.id;
+
+    const result = await query(
+      "SELECT * FROM address WHERE id = ? AND user_id = ?",
+      [addressId, user.id]
+    );
+
+    if (result.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Address not found or unauthorized" });
+    }
+
+    res.status(200).json({ address: result[0] });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // ✏️ UPDATE Address
 router.put("/:id", verifyToken, async (req, res) => {

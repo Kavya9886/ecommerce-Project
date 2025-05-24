@@ -211,17 +211,37 @@ router.delete("/admin/users/:id", authMiddleware, async (req, res) => {
     return res.status(403).json({ message: "Access denied" });
 
   try {
+    const userId = req.params.id;
+
+    // Delete related order items
+    await query(
+      "DELETE oi FROM order_items oi JOIN orders o ON oi.order_id = o.id WHERE o.user_id = ?",
+      [userId]
+    );
+
+    // Delete related orders
+    await query("DELETE FROM orders WHERE user_id = ?", [userId]);
+
+    // Delete related cart items
+    await query("DELETE FROM cart WHERE user_id = ?", [userId]);
+
+    // Delete related addresses
+    await query("DELETE FROM address WHERE user_id = ?", [userId]);
+
+    // Delete user image if it exists
     const [result] = await query("SELECT image_url FROM users WHERE id = ?", [
-      req.params.id,
+      userId,
     ]);
     const imageUrl = result?.image_url;
-    if (imageUrl) {
+    if (imageUrl && imageUrl.includes("/uploads/")) {
       const filename = imageUrl.split("/uploads/")[1];
       fs.unlink(path.join("uploads", filename), () => {});
     }
 
-    await query("DELETE FROM users WHERE id = ?", [req.params.id]);
-    res.json({ message: "User deleted" });
+    // Delete user
+    await query("DELETE FROM users WHERE id = ?", [userId]);
+
+    res.json({ message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

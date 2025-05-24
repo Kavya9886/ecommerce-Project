@@ -14,6 +14,7 @@ import Cart from "./components/cart/Cart";
 import PlaceOrder from "./components/placeOrder/PlaceOrder";
 import OrderConfirmation from "./components/orderConfirmation/OrderConfirmation";
 import OrderHistory from "./components/orderHistory/OrderHistory";
+import AdminManageUsers from "./components/admin/adminmanageuser/AdminManageUsers";
 function App() {
   const [viewMor, setViewMor] = useState(null);
   const [CatImg, setCatImg] = useState();
@@ -51,6 +52,7 @@ function App() {
       <Route path="/admin/categories" element={<AdminCategory />} />
       <Route path="/admin/subcategories" element={<AdminSubCategory />} />
       <Route path="/admin/products" element={<AdminProduct />} />
+      <Route path="/admin/manageusers" element={<AdminManageUsers />} />
     </Routes>
   );
 }

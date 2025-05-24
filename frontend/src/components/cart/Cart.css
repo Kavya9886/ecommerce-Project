@@ -1,122 +1,164 @@
+/* General Page Styling */
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #faf3dd;
+}
+
+.cart-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cart Container */
 .cart-container {
-  padding: 1rem;
+  flex: 1;
+  padding: 2rem;
   max-width: 1200px;
   margin: auto;
+  color: #2b2d42;
 }
 
 .cart-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 1rem;
+  color: #2b2d42;
 }
 
 .empty-msg {
-  text-align: center;
   font-size: 1.2rem;
-  color: #888;
+  text-align: center;
+  color: #999;
 }
 
+/* Cart Grid Layout */
 .cart-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .cart-item {
-  display: flex;
-  flex-direction: column;
-  background: #f9f9f9;
+  background-color: white;
+  border: 1px solid #eee;
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.cart-img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-
-.cart-info {
-  padding: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 1.5rem;
 }
 
-.remove-btn {
-  padding: 0.5rem;
-  border: none;
-  background: #ff6b6b;
-  color: white;
+.cart-item img {
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+/* Cart Info Section */
+.cart-info {
+  flex: 1;
+}
+
+.cart-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: #2b2d42;
+}
+
+.cart-info p {
+  margin: 0 0 0.8rem 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.cart-info label {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.cart-info input[type="number"] {
+  margin-left: 0.6rem;
+  padding: 0.3rem;
+  width: 70px;
+  border: 1px solid #ccc;
   border-radius: 6px;
+}
+
+/* Remove Button */
+.cart-info button {
+  margin-top: 0.5rem;
+  background-color: #ef233c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
-.remove-btn:hover {
-  background: #e63946;
+.cart-info button:hover {
+  background-color: #d90429;
 }
 
-/* Tablet */
-@media (min-width: 600px) {
-  .cart-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* Cart Summary Section */
+.cart-summary {
+  text-align: right;
+  font-size: 1.3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ccc;
+}
+
+.cart-summary button {
+  margin-left: 10px;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #2b2d42;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cart-summary button:hover {
+  background-color: #44475a;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-buttons {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .cart-summary {
+    text-align: center;
   }
 
   .cart-item {
-    flex-direction: row;
-  }
-
-  .cart-img {
-    width: 150px;
-    height: 150px;
+    flex-direction: column;
+    align-items: center;
   }
 
   .cart-info {
-    flex: 1;
+    text-align: center;
   }
-}
-
-/* Laptop and larger */
-@media (min-width: 900px) {
-  .cart-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-.cart-summary {
-  text-align: right;
-  margin-top: 1rem;
-}
-
-.place-order-btn {
-  background-color: #38b000;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.place-order-btn:hover {
-  background-color: #2d6a4f;
-}
-.place-order-btn {
-  margin-top: 1.5rem;
-  padding: 1rem 2rem;
-  background-color: #4CAF50;
-  color: white;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  transition: background 0.3s ease;
-}
-
-.place-order-btn:hover {
-  background-color: #45a049;
 }

@@ -2,17 +2,9 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db"); // Importing the connection
 
-// Dummy middleware for auth (replace with real one if needed)
-const authenticate = (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+const { verifyToken } = require("../middleware/authMiddleware");
 
-  // Simulate user ID
-  req.user = { id: 1 };
-  next();
-};
-
-router.post("/add", authenticate, (req, res) => {
+router.post("/add", verifyToken, (req, res) => {
   const { items, total_price, address_id } = req.body;
   const user_id = req.user.id;
 
@@ -20,12 +12,14 @@ router.post("/add", authenticate, (req, res) => {
     return res.status(400).json({ message: "Invalid order data" });
   }
 
-  // Step 1: Insert into orders table
+  const image_url = items[0]?.image_url || null;
+
   const orderQuery =
-    "INSERT INTO orders (user_id, total_price, address_id) VALUES (?, ?, ?)";
+    "INSERT INTO orders (user_id, total_price, address_id, image_url) VALUES (?, ?, ?, ?)";
+
   db.query(
     orderQuery,
-    [user_id, total_price, address_id],
+    [user_id, total_price, address_id, image_url],
     (err, orderResult) => {
       if (err) {
         console.error("Error inserting order:", err);
@@ -36,7 +30,6 @@ router.post("/add", authenticate, (req, res) => {
 
       const order_id = orderResult.insertId;
 
-      // Step 2: Insert each item into order_items table
       const itemQuery =
         "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ?";
       const itemValues = items.map((item) => [

@@ -29,6 +29,7 @@ app.use("/api/address", addressRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/order-item", orderItemRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/users", require("./routes/auth"));
 
 // Root route
 app.get("/", (req, res) => {

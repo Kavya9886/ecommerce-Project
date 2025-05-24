@@ -1,47 +1,183 @@
-.order-container {
-  max-width: 600px;
+/* General Styling */
+.place-order {
+  max-width: 1200px;
   margin: auto;
   padding: 1rem;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #faf3dd;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+h2, h3 {
+  color: #2d3142;
   text-align: center;
+  margin-bottom: 20px;
 }
 
-.order-summary {
-  background: #f4f4f4;
+/* Section Layouts */
+.cart-summary,
+.address-section,
+.address-form {
+  margin: 1.5rem 0;
+  background: #fff;
   padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
-.order-item {
+.cart-item {
   display: flex;
   justify-content: space-between;
   margin: 0.5rem 0;
 }
 
-.address-input {
+/* Address Table Container for Horizontal Scroll */
+.address-table-container {
+  overflow-x: auto;
   width: 100%;
-  padding: 0.8rem;
-  margin: 1rem 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
 }
 
-.confirm-order-btn {
-  padding: 0.8rem 2rem;
-  background-color: #0077cc;
-  color: white;
+/* Address Table */
+.address-table {
+  width: 1000px;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.address-table th,
+.address-table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.address-table th {
+  background-color: #b8f2e6;
+  color: #2b2d42;
+}
+
+/* Radio Button Styling */
+.address-table td:first-child,
+.address-table th:first-child {
+  width: 40px;
+}
+
+.address-table input[type="radio"] {
+  display: block;
+  margin: auto;
+}
+
+/* Action Buttons */
+.address-table td button {
+  margin: 0 4px;
+  padding: 4px 8px;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  background-color: #ef233c;
+  color: white;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-.confirm-order-btn:hover {
-  background-color: #005fa3;
+.address-table td button:hover {
+  background-color: #d90429;
 }
 
-.order-message {
-  margin-top: 1rem;
-  color: #d9534f;
+/* Form Inputs */
+.address-form input {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Form Buttons */
+.address-form button {
+  padding: 0.5rem 1rem;
+  background-color: #2b2d42;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.address-form button:hover {
+  background-color: #1b1f32;
+}
+
+/* Add Address Button */
+.address-section > button {
+  margin-top: 10px;
+  background: #ffa69e;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
   font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.address-section > button:hover {
+  background: #ff9284;
+}
+
+/* Place Order Button */
+.place-order-btn {
+  display: block;
+  margin-top: 2rem;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  background-color: #ef233c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.place-order-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.place-order-btn:hover:enabled {
+  background: #d33c5c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .address-table-container {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .address-table {
+    width: 1000px;
+  }
+
+  .address-table th,
+  .address-table td {
+    white-space: nowrap;
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+
+  .place-order-btn {
+    font-size: 1rem;
+  }
+
+  .address-table td button {
+    padding: 3px 6px;
+    font-size: 0.75rem;
+  }
 }

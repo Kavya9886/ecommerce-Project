@@ -1,99 +1,125 @@
-.order-confirmation-container {
-  max-width: 800px;
-  margin: 2rem auto;
+/* Container */
+.order-container {
+  display: flex;
+  justify-content: center;
   padding: 2rem;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #faf3dd;
+  min-height: 100vh;
 }
 
-.order-header {
-  text-align: center;
-  margin-bottom: 2rem;
+.order-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+  color: #2b2d42;
 }
 
-.order-header h1 {
-  color: #2e8b57;
+/* Headings */
+.order-card h1 {
   font-size: 2rem;
-  margin-bottom: 0.5rem;
+  color: #2b2d42;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
-.order-header p {
-  font-size: 1.1rem;
-  color: #555;
+.order-card h2 {
+  font-size: 1.2rem;
+  color: #ef233c;
+  margin-bottom: 0.75rem;
 }
 
-.order-details {
-  margin-bottom: 2rem;
+/* Section Styling */
+.section {
+  margin: 1.5rem 0;
 }
 
-.detail-section {
-  margin-bottom: 1.5rem;
-}
-
-.detail-section h2 {
-  font-size: 1.25rem;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.detail-section p {
-  margin: 0.25rem 0;
-  color: #666;
-}
-
+/* Product List */
 .product-list {
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  padding: 1rem 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .product-item {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+  background: #b8f2e6;
+  border-radius: 10px;
+  padding: 0.75rem;
+  gap: 1rem;
 }
 
 .product-item img {
   width: 60px;
   height: 60px;
-  object-fit: cover;
-  margin-right: 1rem;
   border-radius: 8px;
+  object-fit: cover;
+  background-color: #fff;
 }
 
-.product-info {
-  flex-grow: 1;
-}
-
-.product-info h4 {
-  margin: 0;
-  font-size: 1rem;
-  color: #333;
-}
-
-.product-info p {
+/* Payment & Shipping */
+.section p {
   margin: 0.25rem 0;
-  color: #666;
 }
 
-.invoice-button {
-  text-align: center;
+/* Buttons */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
   margin-top: 2rem;
 }
 
-.invoice-button button {
-  background-color: #2e8b57;
-  color: white;
-  border: none;
+.btn {
   padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  background-color: #ef233c;
+  color: white;
   font-size: 1rem;
-  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.invoice-button button:hover {
-  background-color: #246b45;
+.btn:hover {
+  background-color: #d90429;
+}
+
+.btn.outline {
+  background-color: transparent;
+  color: #2b2d42;
+  border: 2px solid #2b2d42;
+}
+
+.btn.outline:hover {
+  background-color: #2b2d42;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .order-card {
+    padding: 1rem;
+  }
+
+  .product-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-item img {
+    width: 100%;
+    height: auto;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 }

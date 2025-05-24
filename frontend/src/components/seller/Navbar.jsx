@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import "./navbar.css";
-import {  useNavigate } from "react-router-dom";
 
 const Navbar = ({ userName = "John Doe", profilePicUrl, onLogout, onSettings }) => {
   const [isOpen, setIsOpen] = useState(false);
-const navigate=useNavigate()
+
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
@@ -33,14 +32,6 @@ const navigate=useNavigate()
           title={userName}
         />
         <span className="user-name">{userName}</span>
-        <button
-          className="icon-btn"
-          aria-label="Settings"
-          title="Settings"
-          onClick={()=>{navigate("/cart")}}
-        >
-          🛒
-        </button>
         <button
           className="icon-btn"
           aria-label="Settings"

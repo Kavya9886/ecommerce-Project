@@ -30,19 +30,27 @@ const offers = [
 ];
 
 export default function Home({ setViewMor }) {
+  const [editMode, setEditMode] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
-  const [products, setProducts] = useState([]); // all products
-  const [filteredProducts, setFilteredProducts] = useState([]); // products shown based on subcategory
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [user, setUser] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    image_url: "",
+  });
 
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const loginTime = localStorage.getItem("loginTime");
 
     if (!token || !loginTime) {
@@ -59,9 +67,19 @@ export default function Home({ setViewMor }) {
       alert("Session expired. Please log in again.");
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, token]);
 
-  // Fetch categories on mount
+  useEffect(() => {
+    if (token) {
+      axios
+        .get(`${BASE_URL}/api/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => setUser(res.data))
+        .catch((err) => console.error("Error fetching user info:", err));
+    }
+  }, [token]);
+
   useEffect(() => {
     axios
       .get(`${BASE_URL}/api/category`)
@@ -69,7 +87,6 @@ export default function Home({ setViewMor }) {
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
 
-  // Fetch all products on mount for default listing
   useEffect(() => {
     axios
       .get(`${BASE_URL}/api/products`)
@@ -99,7 +116,6 @@ export default function Home({ setViewMor }) {
       })
       .catch((err) => console.error("Error fetching subcategories:", err));
 
-    // Show all products when category is selected but no subcategory yet
     setFilteredProducts(products);
   };
 
@@ -125,7 +141,6 @@ export default function Home({ setViewMor }) {
     (currentPage - 1) * PRODUCTS_PER_PAGE,
     currentPage * PRODUCTS_PER_PAGE
   );
-
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
 
   const handleLogout = () => {
@@ -134,16 +149,26 @@ export default function Home({ setViewMor }) {
     navigate("/login");
   };
 
+  const openSettingsModal = () => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        image_url: user.image_url || "",
+      });
+    }
+    setSettingsOpen(true);
+  };
+
   return (
     <div className="home-wrapper">
       <Navbar
-        userName="Jane Smith"
-        profilePicUrl="https://i.pravatar.cc/150?img=3"
+        userName={user?.name || "Guest"}
+        profilePicUrl={user?.image_url || "https://i.pravatar.cc/150?img=3"}
         onLogout={handleLogout}
-        onSettings={() => alert("Open settings")}
+        onSettings={openSettingsModal}
       />
 
-      {/* Hero Slider */}
       <header className="hero-section slider">
         {offers.map((offer, index) => (
           <div
@@ -161,13 +186,11 @@ export default function Home({ setViewMor }) {
               key={idx}
               className={`dot ${idx === currentSlide ? "active" : ""}`}
               onClick={() => setCurrentSlide(idx)}
-              aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
         </div>
       </header>
 
-      {/* Categories */}
       <section className="categories-section">
         <h2>Shop by Category</h2>
         <div className="categories-grid">
@@ -176,7 +199,6 @@ export default function Home({ setViewMor }) {
               key={cat.id}
               className="category-card"
               onClick={() => handleCategoryClick(cat.id)}
-              style={{ cursor: "pointer" }}
             >
               <img src={cat.image_url} alt={cat.name} />
               <h3>{cat.name}</h3>
@@ -185,7 +207,6 @@ export default function Home({ setViewMor }) {
         </div>
       </section>
 
-      {/* Subcategories */}
       {selectedCategory && subcategories[selectedCategory] && (
         <section className="subcategories-section">
           <h2>Subcategories</h2>
@@ -195,7 +216,6 @@ export default function Home({ setViewMor }) {
                 key={subcat.subcategory_id}
                 className="category-card"
                 onClick={() => handleSubcategoryClick(subcat.subcategory_id)}
-                style={{ cursor: "pointer" }}
               >
                 <img src={subcat.image_url} alt={subcat.subcategory_name} />
                 <h3>{subcat.subcategory_name}</h3>
@@ -205,7 +225,6 @@ export default function Home({ setViewMor }) {
         </section>
       )}
 
-      {/* Products */}
       <section className="products-section">
         <h2>Products</h2>
         <div className="products-grid">
@@ -215,20 +234,19 @@ export default function Home({ setViewMor }) {
                 src={`http://localhost:3000${product.image_url}`}
                 alt={product.name}
               />
-              <h3>{product.name}</h3>1<p>₹{product.price}</p>
+              <h3>{product.name}</h3>
+              <p>₹{product.price}</p>
               <button
                 onClick={() => {
                   setViewMor(product);
                   navigate("/viewmore");
                 }}
               >
-                
                 View More
               </button>
             </div>
           ))}
         </div>
-
         {totalPages > 1 && (
           <div className="pagination">
             {[...Array(totalPages)].map((_, i) => (
@@ -246,7 +264,6 @@ export default function Home({ setViewMor }) {
         )}
       </section>
 
-      {/* Newsletter */}
       <section className="newsletter-section">
         <h2>Join Our Newsletter</h2>
         <p>Get exclusive offers and latest product updates</p>
@@ -256,10 +273,134 @@ export default function Home({ setViewMor }) {
         </form>
       </section>
 
-      {/* Footer */}
       <footer className="footer">
-        <p>© 2025 YourShop. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} MyShop. All rights reserved.</p>
       </footer>
+
+      {settingsOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>User Profile</h2>
+
+            {!editMode ? (
+              <div className="user-details">
+                <img
+                  src={user?.image_url || "https://i.pravatar.cc/150?img=3"}
+                  alt="Profile"
+                  width={"200px"}
+                  className="profile-preview"
+                />
+                <p>
+                  <strong>Name:</strong> {user?.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {user?.email}
+                </p>
+                <div className="modal-actions">
+                  <button onClick={() => setEditMode(true)}>Edit</button>
+                  <button onClick={() => setSettingsOpen(false)}>Close</button>
+                </div>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const data = new FormData();
+                  data.append("name", formData.name);
+                  data.append("email", formData.email);
+                  if (formData.password)
+                    data.append("password", formData.password);
+                  if (formData.imageFile)
+                    data.append("image", formData.imageFile);
+
+                  axios
+                    .put(`${BASE_URL}/api/users/update-profile`, data, {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                      },
+                    })
+                    .then((res) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        name: formData.name,
+                        email: formData.email,
+                        image_url: res.data.image_url || prev.image_url,
+                      }));
+                      setSettingsOpen(false);
+                      setEditMode(false);
+                      alert("Profile updated successfully!");
+                    })
+                    .catch((err) => {
+                      console.error("Update failed", err);
+                      alert("Failed to update profile.");
+                    });
+                }}
+              >
+                <label>
+                  Name:
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Email:
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Password:
+                  <input
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  Upload Image:
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setFormData({ ...formData, imageFile: e.target.files[0] })
+                    }
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button type="submit">Save</button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditMode(false);
+                      setFormData({
+                        name: user?.name || "",
+                        email: user?.email || "",
+                        password: "",
+                        imageFile: null,
+                      });
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,19 +6,20 @@ const { verifyToken } = require("../middleware/authMiddleware");
 // ➕ Create Order (Only Customers)
 router.post("/add", verifyToken, (req, res) => {
   const user = req.user;
-  const { items, total_price, address_id } = req.body;
+  const { items, total_price, address_id, imageUrl } = req.body;
 
   // 🔐 Role check
   if (user.role !== "customer") {
     return res.status(403).json({ message: "Only customers can place orders" });
   }
-
+  console.log(imageUrl, "img1");
   // ✅ Validate request body
   if (
     !items ||
     !Array.isArray(items) ||
     items.length === 0 ||
     !total_price ||
+    !imageUrl ||
     !address_id
   ) {
     return res.status(400).json({ message: "Missing or invalid order fields" });
@@ -39,13 +40,16 @@ router.post("/add", verifyToken, (req, res) => {
     }
 
     // 2️⃣ Insert order
+
+    const imageUrl = items[0]?.image || "";
+
     const insertOrderSql = `
-      INSERT INTO orders (user_id, address_id, total, status)
-      VALUES (?, ?, ?, 'pending')
+      INSERT INTO orders (user_id, address_id, total, image_url, status)
+  VALUES (?, ?, ?, ?, 'pending')
     `;
     db.query(
       insertOrderSql,
-      [user.id, address_id, total_price],
+      [user.id, address_id, total_price, imageUrl],
       (err, orderResult) => {
         if (err)
           return res

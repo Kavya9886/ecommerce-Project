@@ -14,8 +14,10 @@ import Cart from "./components/cart/Cart";
 import PlaceOrder from "./components/placeOrder/PlaceOrder";
 import OrderConfirmation from "./components/orderConfirmation/OrderConfirmation";
 import OrderHistory from "./components/orderHistory/OrderHistory";
+import AdminManageUsers from "./components/admin/adminmanageuser/AdminManageUsers";
 function App() {
   const [viewMor, setViewMor] = useState(null);
+  const [CatImg, setCatImg] = useState();
   useEffect(() => {
     if (viewMor) {
       console.log("Product to view more:", viewMor);
@@ -37,9 +39,12 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/home" element={<Home setViewMor={setViewMor} />} />
-      <Route path="/cart" element={<Cart />} />
+      <Route path="/cart" element={<Cart setCatImg={setCatImg} />} />
       <Route path="/place-order" element={<PlaceOrder />} />
-      <Route path="/order-confirmation" element={<OrderConfirmation />} />
+      <Route
+        path="/order-confirmation"
+        element={<OrderConfirmation CatImg={CatImg} />}
+      />
       <Route path="/order-history" element={<OrderHistory />} />
       <Route path="/viewmore" element={<ViewMore viewMor={viewMor} />} />
       <Route path="/seller" element={<SellerHome />} />
@@ -47,6 +52,7 @@ function App() {
       <Route path="/admin/categories" element={<AdminCategory />} />
       <Route path="/admin/subcategories" element={<AdminSubCategory />} />
       <Route path="/admin/products" element={<AdminProduct />} />
+      <Route path="/admin/manageusers" element={<AdminManageUsers />} />
     </Routes>
   );
 }

@@ -14,6 +14,9 @@ function logout(){
       <nav className="admin-navbar">
         <div className="logo">Admin Dashboard</div>
         <div className="nav-buttons">
+           <button onClick={() => navigate("/admin/manageusers")}>
+            Manage Users
+          </button>
           <button onClick={() => navigate("/admin/categories")}>
             Manage Category
           </button>

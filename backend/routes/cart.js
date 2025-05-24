@@ -19,7 +19,7 @@ const requireCustomer = (req, res, next) => {
 // ✅ Add product to cart
 router.post("/add", verifyToken, requireCustomer, async (req, res) => {
   try {
-    const { product_id, quantity } = req.body;
+    const { product_id, quantity, image_url } = req.body;
     const userId = req.user.id;
 
     if (!product_id || !quantity || quantity < 1) {
@@ -43,8 +43,8 @@ router.post("/add", verifyToken, requireCustomer, async (req, res) => {
     }
 
     await query(
-      "INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)",
-      [userId, product_id, quantity]
+      "INSERT INTO cart (user_id, product_id, quantity,image_url) VALUES (?, ?, ?,?)",
+      [userId, product_id, quantity, image_url]
     );
     res.status(201).json({ message: "Product added to cart" });
   } catch (err) {
@@ -58,11 +58,17 @@ router.get("/", verifyToken, requireCustomer, async (req, res) => {
     const userId = req.user.id;
     const results = await query(
       `
-      SELECT c.id AS cart_id, p.*, c.quantity 
+      SELECT 
+        c.id AS cart_id,
+        c.quantity,
+        p.id AS product_id,
+        p.name,
+        p.price,
+        p.image_url
       FROM cart c 
       JOIN products p ON c.product_id = p.id 
       WHERE c.user_id = ?
-    `,
+      `,
       [userId]
     );
     res.status(200).json(results);

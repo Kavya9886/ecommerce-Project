@@ -1,8 +1,8 @@
-// PlaceOrder.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./PlaceOrder.css";
 import { useNavigate } from "react-router-dom";
+
 const PlaceOrder = () => {
   const [cart, setCart] = useState([]);
   const [addresses, setAddresses] = useState([]);
@@ -63,28 +63,39 @@ const PlaceOrder = () => {
     });
     fetchAddresses();
   };
-  const handleRemove = async (productId) => {
+
+  const handleRemove = async () => {
     try {
       await axios.delete("http://localhost:3000/api/cart/clear", {
-        headers: {Authorization: token},
+        headers: { Authorization: token },
       });
-      console.log("cleared cart")
     } catch (error) {
-      console.error("Failed to remove item:", error);
+      console.error("Failed to clear cart:", error);
     }
   };
+  const itm = cart.map((item, index) => (
+    <>
+      <div>{index}</div>
+    </>
+  ));
+  {
+    console.log(itm);
+  }
+  const items = cart.map(
+    ({ product_id, quantity, price, name, image_url }) => ({
+      product_id: product_id,
+      quantity,
+      price,
+      name,
+      image_url,
+    })
+  );
+  console.log(items, "cart");
   const placeOrder = async () => {
     const total = cart.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    const items = cart.map(({ id, quantity, price, name, image }) => ({
-      product_id: id,
-      quantity,
-      price,
-      name,
-      image,
-    }));
 
     try {
       const response = await axios.post(
@@ -94,9 +105,7 @@ const PlaceOrder = () => {
           total_price: total,
           address_id: selectedAddressId,
         },
-        {
-          headers: { Authorization: token },
-        }
+        { headers: { Authorization: token } }
       );
 
       if (window.confirm("Are you sure you want to place the order?")) {
@@ -104,8 +113,9 @@ const PlaceOrder = () => {
           id: response.data.order_id,
           items,
           total_price: total,
+          image_url: "",
           address: addresses.find((a) => a.id === selectedAddressId),
-          estimated_delivery: "5-7 business days", // or get from API
+          estimated_delivery: "5-7 business days",
         };
 
         navigate("/order-confirmation", { state: { order: orderData } });
@@ -137,39 +147,64 @@ const PlaceOrder = () => {
 
       <div className="address-section">
         <h3>Select Address</h3>
-        {addresses.length === 0 && <p>No address found</p>}
-        {addresses.map((addr) => (
-          <div key={addr.id} className="address-card">
-            <input
-              type="radio"
-              name="address"
-              checked={selectedAddressId === addr.id}
-              onChange={() => setSelectedAddressId(addr.id)}
-            />
-            <div className="details">
-              <p>
-                <strong>{addr.full_name}</strong> | {addr.phone}
-              </p>
-              <p>
-                {addr.address1}, {addr.address2}, {addr.city}, {addr.state}
-              </p>
-              <p>
-                {addr.postal_code}, {addr.country}
-              </p>
-            </div>
-            <div className="actions">
-              <button
-                onClick={() => {
-                  setForm({ ...addr });
-                  setShowAddressForm(true);
-                }}
-              >
-                Edit
-              </button>
-              <button onClick={() => deleteAddress(addr.id)}>Delete</button>
-            </div>
+        {addresses.length === 0 ? (
+          <p>No address found</p>
+        ) : (
+          <div className="address-table-container">
+            <table className="address-table">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>City</th>
+                  <th>State</th>
+                  <th>Country</th>
+                  <th>Postal Code</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {addresses.map((addr) => (
+                  <tr key={addr.id}>
+                    <td>
+                      <input
+                        type="radio"
+                        name="address"
+                        checked={selectedAddressId === addr.id}
+                        onChange={() => setSelectedAddressId(addr.id)}
+                      />
+                    </td>
+                    <td>{addr.full_name}</td>
+                    <td>{addr.phone}</td>
+                    <td>
+                      {addr.address1}, {addr.address2}
+                    </td>
+                    <td>{addr.city}</td>
+                    <td>{addr.state}</td>
+                    <td>{addr.country}</td>
+                    <td>{addr.postal_code}</td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          setForm({ ...addr });
+                          setShowAddressForm(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button onClick={() => deleteAddress(addr.id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
+        )}
+
         <button
           onClick={() => {
             setForm({});

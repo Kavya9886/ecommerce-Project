@@ -14,10 +14,14 @@ const OrderHistory = () => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get("http://localhost:3000/api/orderHistory", {
-          headers: { Authorization: token },
-        });
+        const { data } = await axios.get(
+          "http://localhost:3000/api/orderHistory",
+          {
+            headers: { Authorization: token },
+          }
+        );
         setOrders(data);
+        console.log(data);
       } catch (err) {
         setError("Failed to fetch orders.");
       } finally {
@@ -33,18 +37,19 @@ const OrderHistory = () => {
   };
 
   const goHome = () => {
-    navigate("/home"); 
+    navigate("/home");
   };
-
-  if (loading) return <div className="loader">Loading orders...</div>;
-  if (error) return <div className="error">{error}</div>;
 
   return (
     <>
       <nav className="navbar">
         <div className="nav-container">
-          <button className="nav-btn" onClick={goHome}>Home</button>
-          <button className="nav-btn logout" onClick={handleLogout}>Logout</button>
+          <button className="nav-btn" onClick={goHome}>
+            Home
+          </button>
+          <button className="nav-btn logout" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </nav>
 
@@ -61,14 +66,21 @@ const OrderHistory = () => {
                   <span>{new Date(order.created_at).toLocaleDateString()}</span>
                 </div>
                 <div className="order-details">
-                  <p><strong>Total:</strong> ₹{order.total_price}</p>
-                  <p><strong>Status:</strong> {order.status || "Processing"}</p>
+                  <p>
+                    <strong>Total:</strong> ₹{order.total_price}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {order.status || "Processing"}
+                  </p>
                 </div>
                 {order.items && order.items.length > 0 && (
                   <div className="order-items">
                     {order.items.map((item) => (
                       <div key={item.id} className="order-item">
-                        <img src={item.image || "/placeholder.png"} alt={item.name} />
+                        <img
+                          src={item.image_url || "/placeholder.png"}
+                          alt={item.name}
+                        />
                         <div>
                           <p>{item.name}</p>
                           <p>Qty: {item.quantity}</p>

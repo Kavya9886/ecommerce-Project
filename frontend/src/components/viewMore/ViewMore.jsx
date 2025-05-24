@@ -11,7 +11,7 @@ export default function ViewMore({ viewMor }) {
   const [quantity, setQuantity] = useState(1);
 
   const id = viewMor.id;
-
+const img=viewMor.image_url
   const handleAddToCart = () => {
     if (!quantity || quantity < 1) {
       alert("Please enter a valid quantity.");
@@ -26,6 +26,7 @@ export default function ViewMore({ viewMor }) {
         {
           product_id: id,
           quantity: quantity,
+          image_url:img
         },
         {
           headers: {
@@ -38,7 +39,10 @@ export default function ViewMore({ viewMor }) {
         navigate("/cart");
       })
       .catch((err) => {
-        console.error("Error adding to cart:", err.response?.data || err.message);
+        console.error(
+          "Error adding to cart:",
+          err.response?.data || err.message
+        );
         alert("Failed to add to cart. Please try again.");
       });
   };
@@ -67,7 +71,10 @@ export default function ViewMore({ viewMor }) {
       <div className="viewmore-container">
         <div className="viewmore-card">
           <div className="viewmore-image">
-            <img src={`http://localhost:3000${viewMor.image_url}`} alt={viewMor.name} />
+            <img
+              src={`http://localhost:3000${viewMor.image_url}`}
+              alt={viewMor.name}
+            />
           </div>
           <div className="viewmore-details">
             <h2>{viewMor.name}</h2>
@@ -94,7 +101,10 @@ export default function ViewMore({ viewMor }) {
             </div>
 
             <div className="viewmore-buttons">
-              <button onClick={() => navigate("/home")} className="btn-secondary">
+              <button
+                onClick={() => navigate("/home")}
+                className="btn-secondary"
+              >
                 Continue Shopping
               </button>
               <button onClick={handleAddToCart} className="btn-primary">

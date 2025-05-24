@@ -16,6 +16,7 @@ import OrderConfirmation from "./components/orderConfirmation/OrderConfirmation"
 import OrderHistory from "./components/orderHistory/OrderHistory";
 function App() {
   const [viewMor, setViewMor] = useState(null);
+  const [CatImg, setCatImg] = useState();
   useEffect(() => {
     if (viewMor) {
       console.log("Product to view more:", viewMor);
@@ -37,9 +38,12 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/home" element={<Home setViewMor={setViewMor} />} />
-      <Route path="/cart" element={<Cart />} />
+      <Route path="/cart" element={<Cart setCatImg={setCatImg} />} />
       <Route path="/place-order" element={<PlaceOrder />} />
-      <Route path="/order-confirmation" element={<OrderConfirmation />} />
+      <Route
+        path="/order-confirmation"
+        element={<OrderConfirmation CatImg={CatImg} />}
+      />
       <Route path="/order-history" element={<OrderHistory />} />
       <Route path="/viewmore" element={<ViewMore viewMor={viewMor} />} />
       <Route path="/seller" element={<SellerHome />} />

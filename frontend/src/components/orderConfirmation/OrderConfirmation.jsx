@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./OrderConfirmation.css";
 
-const OrderConfirmation = () => {
+const OrderConfirmation = ({CatImg}) => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -28,7 +28,8 @@ const OrderConfirmation = () => {
           <ul className="product-list">
             {order.items.map((item, index) => (
               <li key={index} className="product-item">
-                <img src={item.image} alt={item.name} />
+               
+                <img src={CatImg} alt={item.name} />
                 <div>
                   <p>
                     <strong>{item.name}</strong>

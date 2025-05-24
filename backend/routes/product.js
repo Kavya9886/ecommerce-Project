@@ -247,6 +247,77 @@ router.get("/my-products", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+// ================================
+// ADMIN: Get all products
+// ================================
+router.get("/allProducts", verifyToken, async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!isAdmin(user)) {
+      return res
+        .status(403)
+        .json({ message: "Only admin can access this route." });
+    }
+
+    const sql = `
+      SELECT p.id, p.name, p.description, p.price, p.quantity, p.image_url,
+             sc.name AS subcategoryName,
+             c.name AS categoryName
+      FROM products p
+      JOIN subcategories sc ON p.subcategory_id = sc.id
+      JOIN categories c ON sc.category_id = c.id
+      ORDER BY p.id DESC
+    `;
+
+    const [rows] = await db.promise().query(sql);
+    res.json(rows); // Direct array response for frontend simplicity
+  } catch (err) {
+    console.error("Admin get all products error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// ================================
+// ADMIN: Delete any product
+// ================================
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!isAdmin(user)) {
+      return res
+        .status(403)
+        .json({ message: "Only admin can delete products." });
+    }
+
+    const { id } = req.params;
+
+    // Get product image URL to optionally delete the file
+    const [[product]] = await db
+      .promise()
+      .query("SELECT image_url FROM products WHERE id = ?", [id]);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    // Optionally delete product image
+    const imagePath = product.image_url?.replace("/uploads/", "");
+    if (imagePath) {
+      const fs = require("fs");
+      const path = require("path");
+      fs.unlink(path.join(__dirname, "..", "uploads", imagePath), () => {});
+    }
+
+    await db.promise().query("DELETE FROM products WHERE id = ?", [id]);
+
+    res.json({ message: "Product deleted successfully." });
+  } catch (err) {
+    console.error("Admin delete product error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 // ================================
 // CUSTOMER: Get all products (public)
